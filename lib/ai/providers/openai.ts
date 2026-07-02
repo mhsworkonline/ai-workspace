@@ -1,10 +1,15 @@
 import OpenAI from "openai";
 import type { AIMessage, AIOptions, AIProvider, AIResponse, AIStreamChunk } from "@/types/ai";
-import { DEFAULT_AI_MAX_TOKENS, DEFAULT_AI_TEMPERATURE } from "@/lib/constants";
+import {
+  AIProviderName,
+  DEFAULT_AI_MAX_TOKENS,
+  DEFAULT_AI_TEMPERATURE,
+  defaultModelFor,
+} from "@/lib/constants";
 
 export class OpenAIProvider implements AIProvider {
   readonly name = "openai";
-  readonly defaultModel = "gpt-4o";
+  readonly defaultModel = defaultModelFor(AIProviderName.OpenAI);
   private client: OpenAI;
 
   constructor(apiKey: string) {

@@ -1,10 +1,15 @@
 import { GoogleGenerativeAI, type Content } from "@google/generative-ai";
 import type { AIMessage, AIOptions, AIProvider, AIResponse, AIStreamChunk } from "@/types/ai";
-import { DEFAULT_AI_MAX_TOKENS, DEFAULT_AI_TEMPERATURE } from "@/lib/constants";
+import {
+  AIProviderName,
+  DEFAULT_AI_MAX_TOKENS,
+  DEFAULT_AI_TEMPERATURE,
+  defaultModelFor,
+} from "@/lib/constants";
 
 export class GeminiProvider implements AIProvider {
   readonly name = "gemini";
-  readonly defaultModel = "gemini-1.5-pro";
+  readonly defaultModel = defaultModelFor(AIProviderName.Gemini);
   private client: GoogleGenerativeAI;
 
   constructor(apiKey: string) {

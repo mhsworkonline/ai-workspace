@@ -1,10 +1,15 @@
 import Groq from "groq-sdk";
 import type { AIMessage, AIOptions, AIProvider, AIResponse, AIStreamChunk } from "@/types/ai";
-import { DEFAULT_AI_MAX_TOKENS, DEFAULT_AI_TEMPERATURE } from "@/lib/constants";
+import {
+  AIProviderName,
+  DEFAULT_AI_MAX_TOKENS,
+  DEFAULT_AI_TEMPERATURE,
+  defaultModelFor,
+} from "@/lib/constants";
 
 export class GroqProvider implements AIProvider {
   readonly name = "groq";
-  readonly defaultModel = "llama-3.1-70b-versatile";
+  readonly defaultModel = defaultModelFor(AIProviderName.Groq);
   private client: Groq;
 
   constructor(apiKey: string) {

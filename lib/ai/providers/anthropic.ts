@@ -1,10 +1,15 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { AIMessage, AIOptions, AIProvider, AIResponse, AIStreamChunk } from "@/types/ai";
-import { DEFAULT_AI_MAX_TOKENS, DEFAULT_AI_TEMPERATURE } from "@/lib/constants";
+import {
+  AIProviderName,
+  DEFAULT_AI_MAX_TOKENS,
+  DEFAULT_AI_TEMPERATURE,
+  defaultModelFor,
+} from "@/lib/constants";
 
 export class AnthropicProvider implements AIProvider {
   readonly name = "anthropic";
-  readonly defaultModel = "claude-sonnet-4-6";
+  readonly defaultModel = defaultModelFor(AIProviderName.Anthropic);
   private client: Anthropic;
 
   constructor(apiKey: string) {

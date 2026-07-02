@@ -92,25 +92,39 @@ export interface AIModelInfo {
   costPer1kTokensUsd: number;
 }
 
+/**
+ * Model catalog — the single source of truth for every model dropdown
+ * (admin panel, user AI settings, AI blocks) and for provider fallbacks.
+ * The first entry per provider is the recommended default.
+ */
 export const AI_PROVIDER_MODELS: Record<AIProviderName, AIModelInfo[]> = {
   [AIProviderName.Groq]: [
-    { id: "llama-3.1-70b-versatile", label: "Llama 3.1 70B Versatile", costPer1kTokensUsd: 0.0008 },
-    { id: "llama-3.1-8b-instant", label: "Llama 3.1 8B Instant", costPer1kTokensUsd: 0.0001 },
-    { id: "mixtral-8x7b-32768", label: "Mixtral 8x7B", costPer1kTokensUsd: 0.0003 },
+    { id: "llama-3.3-70b-versatile", label: "Llama 3.3 70B Versatile (recommended)", costPer1kTokensUsd: 0.0008 },
+    { id: "llama-3.1-8b-instant", label: "Llama 3.1 8B Instant (fastest)", costPer1kTokensUsd: 0.0001 },
+    { id: "mixtral-8x7b-32768", label: "Mixtral 8x7B (long content)", costPer1kTokensUsd: 0.0003 },
+    { id: "gemma2-9b-it", label: "Gemma 2 9B (lightweight)", costPer1kTokensUsd: 0.0002 },
   ],
   [AIProviderName.Anthropic]: [
-    { id: "claude-sonnet-4-6", label: "Claude Sonnet 4.6", costPer1kTokensUsd: 0.009 },
-    { id: "claude-opus-4-8", label: "Claude Opus 4.8", costPer1kTokensUsd: 0.03 },
+    { id: "claude-sonnet-4-6", label: "Claude Sonnet 4.6 (recommended)", costPer1kTokensUsd: 0.009 },
+    { id: "claude-opus-4-8", label: "Claude Opus 4.8 (most powerful)", costPer1kTokensUsd: 0.03 },
+    { id: "claude-haiku-4-5-20251001", label: "Claude Haiku 4.5 (fastest)", costPer1kTokensUsd: 0.003 },
   ],
   [AIProviderName.OpenAI]: [
-    { id: "gpt-4o", label: "GPT-4o", costPer1kTokensUsd: 0.0075 },
-    { id: "gpt-4o-mini", label: "GPT-4o Mini", costPer1kTokensUsd: 0.0004 },
+    { id: "gpt-4o", label: "GPT-4o (recommended)", costPer1kTokensUsd: 0.0075 },
+    { id: "gpt-4o-mini", label: "GPT-4o Mini (fastest, cheapest)", costPer1kTokensUsd: 0.0004 },
+    { id: "gpt-4-turbo", label: "GPT-4 Turbo (powerful)", costPer1kTokensUsd: 0.02 },
   ],
   [AIProviderName.Gemini]: [
-    { id: "gemini-1.5-pro", label: "Gemini 1.5 Pro", costPer1kTokensUsd: 0.0044 },
-    { id: "gemini-1.5-flash", label: "Gemini 1.5 Flash", costPer1kTokensUsd: 0.0003 },
+    { id: "gemini-1.5-pro", label: "Gemini 1.5 Pro (recommended)", costPer1kTokensUsd: 0.0044 },
+    { id: "gemini-1.5-flash", label: "Gemini 1.5 Flash (fastest)", costPer1kTokensUsd: 0.0003 },
+    { id: "gemini-2.0-flash", label: "Gemini 2.0 Flash (latest)", costPer1kTokensUsd: 0.0003 },
   ],
 };
+
+/** Recommended default per provider — first catalog entry, never hardcoded elsewhere. */
+export function defaultModelFor(provider: AIProviderName): string {
+  return AI_PROVIDER_MODELS[provider][0].id;
+}
 
 export const AI_PROVIDER_LABELS: Record<AIProviderName, string> = {
   [AIProviderName.Groq]: "Groq",

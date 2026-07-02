@@ -237,7 +237,7 @@ function TypeSettings({ block, onChange }: TypeSettingsProps): JSX.Element | nul
             />
           </div>
           <div className="space-y-1.5">
-            <Label>Model (blank = platform default)</Label>
+            <Label>Model</Label>
             <Select
               value={data.model ?? "default"}
               onValueChange={(model) => onChange({ model: model === "default" ? undefined : model })}
@@ -246,7 +246,9 @@ function TypeSettings({ block, onChange }: TypeSettingsProps): JSX.Element | nul
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="default">Platform default</SelectItem>
+                <SelectItem value="default">
+                  Use workspace default (set in Admin → AI Settings)
+                </SelectItem>
                 {ALL_MODELS.map((model) => (
                   <SelectItem key={model.id} value={model.id}>
                     {model.label}
