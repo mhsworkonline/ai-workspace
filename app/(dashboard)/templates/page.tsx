@@ -50,7 +50,7 @@ export default function TemplatesPage(): JSX.Element {
         (template.description ?? "").toLowerCase().includes(query.toLowerCase()))
   );
 
-  async function useTemplate(template: Template): Promise<void> {
+  async function applyTemplate(template: Template): Promise<void> {
     if (!session?.workspace) {
       return;
     }
@@ -131,7 +131,7 @@ export default function TemplatesPage(): JSX.Element {
                     </Button>
                     <Button
                       size="sm"
-                      onClick={() => void useTemplate(template)}
+                      onClick={() => void applyTemplate(template)}
                       disabled={usingId === template.id}
                     >
                       {usingId === template.id ? (
@@ -172,7 +172,7 @@ export default function TemplatesPage(): JSX.Element {
             <Button
               onClick={() => {
                 if (preview) {
-                  void useTemplate(preview);
+                  void applyTemplate(preview);
                   setPreview(null);
                 }
               }}

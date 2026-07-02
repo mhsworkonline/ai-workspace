@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle } from "lucide-react";
-import { Component, type ErrorInfo, type ReactNode } from "react";
+import { Component, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 
 interface ErrorBoundaryProps {
@@ -21,10 +21,6 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   static getDerivedStateFromError(): ErrorBoundaryState {
     return { hasError: true };
-  }
-
-  componentDidCatch(_error: Error, _info: ErrorInfo): void {
-    // Errors surface via the fallback UI; avoid leaking stack traces to users.
   }
 
   render(): ReactNode {

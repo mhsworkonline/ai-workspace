@@ -42,6 +42,15 @@ export async function getWorkspaceForUser(
   return data ?? null;
 }
 
+/** Returns the authed context only when the user is a platform admin. */
+export async function getAdminContext(): Promise<AuthedContext | null> {
+  const ctx = await getAuthedContext();
+  if (!ctx || !ctx.profile.is_admin) {
+    return null;
+  }
+  return ctx;
+}
+
 export function jsonError(message: string, status = 400, upgrade = false): NextResponse {
   return NextResponse.json({ error: message, upgrade }, { status });
 }
