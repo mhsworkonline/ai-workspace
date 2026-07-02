@@ -6,14 +6,14 @@ import {
   PenLine,
   Rocket,
   Sparkles,
-  Youtube,
+  Video,
   type LucideIcon,
 } from "lucide-react";
 
 const ICONS: Record<string, LucideIcon> = {
   "pen-line": PenLine,
   rocket: Rocket,
-  youtube: Youtube,
+  youtube: Video,
   microscope: Microscope,
   megaphone: Megaphone,
   "clipboard-list": ClipboardList,

@@ -21,8 +21,8 @@ interface RouteParams {
 const runSchema = z.object({
   input: z.object({
     text: z.string().max(50_000).optional(),
-    fields: z.record(z.string()).optional(),
-    variables: z.record(z.string()).optional(),
+    fields: z.record(z.string(), z.string()).optional(),
+    variables: z.record(z.string(), z.string()).optional(),
   }),
 });
 

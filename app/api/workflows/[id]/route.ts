@@ -13,7 +13,7 @@ const blockSchema = z.object({
   id: z.string(),
   type: z.string(),
   position: positionSchema,
-  data: z.record(z.unknown()),
+  data: z.record(z.string(), z.unknown()),
 });
 const connectionSchema = z.object({
   id: z.string(),
@@ -28,8 +28,8 @@ const updateSchema = z.object({
   projectId: z.string().uuid().nullish(),
   blocks: z.array(blockSchema).optional(),
   connections: z.array(connectionSchema).optional(),
-  canvasState: z.record(z.unknown()).optional(),
-  variables: z.record(z.string()).optional(),
+  canvasState: z.record(z.string(), z.unknown()).optional(),
+  variables: z.record(z.string(), z.string()).optional(),
   isArchived: z.boolean().optional(),
 });
 

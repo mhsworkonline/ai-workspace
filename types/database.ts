@@ -10,7 +10,10 @@ import type {
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
-export interface Profile {
+// Row shapes are type aliases (not interfaces) so they satisfy supabase-js's
+// Record<string, unknown> table constraint.
+
+export type Profile = {
   id: string;
   email: string;
   full_name: string | null;
@@ -20,13 +23,20 @@ export interface Profile {
   is_suspended: boolean;
   onboarding_completed: boolean;
   onboarding_step: number;
+  notification_prefs: NotificationPrefs;
   created_at: string;
   updated_at: string;
-}
+};
+
+export type NotificationPrefs = {
+  runComplete?: boolean;
+  runFailed?: boolean;
+  weeklySummary?: boolean;
+};
 
 export type SubscriptionTier = "free" | "pro" | "business";
 
-export interface Workspace {
+export type Workspace = {
   id: string;
   owner_id: string;
   name: string;
@@ -44,12 +54,12 @@ export interface Workspace {
   storage_used_bytes: number;
   created_at: string;
   updated_at: string;
-}
+};
 
 export type MemberRoleValue = "admin" | "editor" | "viewer";
 export type MemberStatus = "pending" | "active" | "removed";
 
-export interface WorkspaceMember {
+export type WorkspaceMember = {
   id: string;
   workspace_id: string;
   user_id: string | null;
@@ -59,9 +69,9 @@ export interface WorkspaceMember {
   invited_at: string;
   joined_at: string | null;
   status: MemberStatus;
-}
+};
 
-export interface Project {
+export type Project = {
   id: string;
   workspace_id: string;
   created_by: string | null;
@@ -73,11 +83,11 @@ export interface Project {
   deleted_at: string | null;
   created_at: string;
   updated_at: string;
-}
+};
 
 export type VariableScope = "workspace" | "project" | "workflow" | "system";
 
-export interface Variable {
+export type Variable = {
   id: string;
   workspace_id: string;
   project_id: string | null;
@@ -89,9 +99,9 @@ export interface Variable {
   created_by: string | null;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface Workflow {
+export type Workflow = {
   id: string;
   workspace_id: string;
   project_id: string | null;
@@ -113,9 +123,9 @@ export interface Workflow {
   deleted_at: string | null;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface WorkflowVersion {
+export type WorkflowVersion = {
   id: string;
   workflow_id: string;
   version: number;
@@ -123,9 +133,9 @@ export interface WorkflowVersion {
   connections: BlockConnection[];
   created_by: string | null;
   created_at: string;
-}
+};
 
-export interface WorkflowRun {
+export type WorkflowRun = {
   id: string;
   workflow_id: string;
   workspace_id: string;
@@ -143,11 +153,11 @@ export interface WorkflowRun {
   ai_provider: string | null;
   ai_model: string | null;
   created_at: string;
-}
+};
 
 export type MemoryType = "text" | "file" | "variable" | "output";
 
-export interface MemoryEntry {
+export type MemoryEntry = {
   id: string;
   workspace_id: string;
   project_id: string | null;
@@ -160,9 +170,9 @@ export interface MemoryEntry {
   tags: string[];
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface Asset {
+export type Asset = {
   id: string;
   workspace_id: string;
   project_id: string | null;
@@ -180,9 +190,9 @@ export interface Asset {
   deleted_at: string | null;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface Template {
+export type Template = {
   id: string;
   name: string;
   description: string | null;
@@ -195,17 +205,17 @@ export interface Template {
   use_count: number;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface AdminSetting {
+export type AdminSetting = {
   id: string;
   key: string;
   value: string | null;
   updated_by: string | null;
   updated_at: string;
-}
+};
 
-export interface UserAISettings {
+export type UserAISettings = {
   id: string;
   user_id: string;
   use_custom_provider: boolean;
@@ -214,9 +224,9 @@ export interface UserAISettings {
   model: string | null;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface ActivityLogEntry {
+export type ActivityLogEntry = {
   id: string;
   workspace_id: string;
   user_id: string | null;
@@ -225,16 +235,16 @@ export interface ActivityLogEntry {
   resource_id: string | null;
   details: Record<string, Json>;
   created_at: string;
-}
+};
 
-interface Tbl<R> {
+type Tbl<R extends Record<string, unknown>> = {
   Row: R;
   Insert: Partial<R>;
   Update: Partial<R>;
   Relationships: [];
-}
+};
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       aiw_profiles: Tbl<Profile>;
@@ -252,9 +262,9 @@ export interface Database {
       aiw_user_ai_settings: Tbl<UserAISettings>;
       aiw_activity_log: Tbl<ActivityLogEntry>;
     };
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
-    Enums: Record<string, never>;
-    CompositeTypes: Record<string, never>;
+    Views: { [_ in never]: never };
+    Functions: { [_ in never]: never };
+    Enums: { [_ in never]: never };
+    CompositeTypes: { [_ in never]: never };
   };
-}
+};
