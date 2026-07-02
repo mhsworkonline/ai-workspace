@@ -18,12 +18,27 @@ export async function fetchSession(): Promise<SessionData | null> {
     return null;
   }
 
-  const { data: profile, error: profileError } = await supabase
+  let { data: profile } = await supabase
     .from(TABLES.PROFILES)
     .select("*")
     .eq("id", user.id)
-    .single();
-  if (profileError || !profile) {
+    .maybeSingle();
+
+  if (!profile) {
+    // Auth accounts that predate AI Workspace (shared Supabase project) have no
+    // profile row — the signup trigger only fires on INSERT. Create it now.
+    const { data: created } = await supabase
+      .from(TABLES.PROFILES)
+      .insert({
+        id: user.id,
+        email: user.email ?? "",
+        full_name: (user.user_metadata?.full_name as string | undefined) ?? "",
+      })
+      .select()
+      .maybeSingle();
+    profile = created ?? null;
+  }
+  if (!profile) {
     return null;
   }
 

@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useSession } from "@/hooks/use-session";
 import { TABLES } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
+import { slugify } from "@/lib/utils/format";
 import { useOnboardingStore } from "@/stores/onboarding.store";
 
 export default function SuccessPage(): JSX.Element {
@@ -25,6 +26,28 @@ export default function SuccessPage(): JSX.Element {
         data: { user },
       } = await supabase.auth.getUser();
       if (user) {
+        // Never complete onboarding without a workspace — the dashboard
+        // depends on one existing.
+        if (!session?.workspace) {
+          const { data: owned } = await supabase
+            .from(TABLES.WORKSPACES)
+            .select("id")
+            .eq("owner_id", user.id)
+            .limit(1)
+            .maybeSingle();
+          if (!owned) {
+            const { error } = await supabase.from(TABLES.WORKSPACES).insert({
+              owner_id: user.id,
+              name: "My Workspace",
+              slug: slugify("my-workspace"),
+            });
+            if (error) {
+              toast.error(error.message);
+              setFinishing(false);
+              return;
+            }
+          }
+        }
         await supabase
           .from(TABLES.PROFILES)
           .update({ onboarding_completed: true })

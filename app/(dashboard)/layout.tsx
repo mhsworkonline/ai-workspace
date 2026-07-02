@@ -27,11 +27,39 @@ export default async function DashboardLayout({
     .eq("id", user.id)
     .maybeSingle();
 
-  if (profile?.is_suspended) {
+  if (!profile) {
+    // Pre-existing auth account (shared Supabase project) with no profile row
+    // yet — create it, then send them through onboarding.
+    await supabase.from(TABLES.PROFILES).insert({
+      id: user.id,
+      email: user.email ?? "",
+      full_name: (user.user_metadata?.full_name as string | undefined) ?? "",
+    });
+    redirect("/welcome");
+  }
+
+  if (profile.is_suspended) {
     redirect("/login?error=suspended");
   }
-  if (profile && !profile.onboarding_completed) {
+  if (!profile.onboarding_completed) {
     redirect("/welcome");
+  }
+
+  // Onboarding done but no workspace (skipped creation, or it was deleted):
+  // send them to the workspace step instead of a dead dashboard.
+  const { count: ownedCount } = await supabase
+    .from(TABLES.WORKSPACES)
+    .select("id", { count: "exact", head: true })
+    .eq("owner_id", user.id);
+  if ((ownedCount ?? 0) === 0) {
+    const { count: memberCount } = await supabase
+      .from(TABLES.WORKSPACE_MEMBERS)
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("status", "active");
+    if ((memberCount ?? 0) === 0) {
+      redirect("/workspace");
+    }
   }
 
   return (

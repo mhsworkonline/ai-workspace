@@ -1,6 +1,8 @@
 "use client";
 
 import { HardDrive, History, Users, Workflow } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { RecentRuns } from "@/components/dashboard/recent-runs";
 import { StatsCard } from "@/components/dashboard/stats-card";
@@ -15,11 +17,25 @@ import { PLAN_LIMITS, PlanTier } from "@/lib/constants";
 import { formatBytes, formatNumber } from "@/lib/utils/format";
 
 export default function DashboardPage(): JSX.Element {
+  const router = useRouter();
   const { session, isLoading } = useSession();
   const workspace = session?.workspace;
   const { data: workflows } = useWorkflows(workspace?.id);
   const { data: runs, isLoading: runsLoading } = useRuns(workspace?.id, { limit: 100 });
   const { data: members } = useMembers(workspace?.id);
+
+  // Session resolved but there's no profile or workspace — route back into
+  // onboarding rather than sitting on skeletons.
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+    if (session === null) {
+      router.replace("/login");
+    } else if (session && !session.workspace) {
+      router.replace(session.profile.onboarding_completed ? "/workspace" : "/welcome");
+    }
+  }, [isLoading, session, router]);
 
   if (isLoading || !workspace) {
     return <LoadingSkeleton variant="cards" count={4} />;
